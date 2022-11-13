@@ -1,0 +1,11 @@
+﻿table
+{
+    margin-left: 1vw;
+    margin-top: 1vh;
+    border-collapse: collapse;
+}
+
+table, td, th 
+{
+    border: 2px solid black;
+}
