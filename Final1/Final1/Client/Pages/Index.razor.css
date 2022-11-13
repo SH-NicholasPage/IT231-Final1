@@ -8,4 +8,21 @@
 table, td, th 
 {
     border: 2px solid black;
+    padding: 4px;
+}
+
+.failed
+{
+    color: red;
+}
+
+.passed
+{
+    color: green;
+}
+
+.error
+{
+    font-size: 2vw;
+    margin-top: 1em;
 }

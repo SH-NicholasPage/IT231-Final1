@@ -1,6 +1,4 @@
 ﻿@page "/"
-@inject HttpClient Http;
-
 <PageTitle>Index</PageTitle>
 
 <table style="border: 2px solid black; border-collapse: collapse;">
@@ -12,29 +10,33 @@
             <th>
                 Status
             </th>
+            <th>
+                Messages
+            </th>
         </tr>
     </thead>
+    <!--I'm lazy so I'm doing stupid HTML garbage OMEGALUL-->
     <tbody>
-        <tr>
-            <td>
-                100 posts
-            </td>
-            <td>
-                @Tests[0];
-            </td>
-        </tr>
-
+        @for(int i = 0; i < Math.Min(TestNames.Length, TestStatuses.Count); i++)
+        {
+            <tr>
+                <td>
+                    @TestNames[i]
+                </td>
+                <td>
+                    <div class="@((TestStatuses[i] == false) ? "failed" : "passed")">@((TestStatuses[i] == false) ? "Failed" : "Passed")</div>
+                </td>
+                <td>
+                    @TestMessages[i]
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
-@code {
-    List<Boolean> Tests = new List<Boolean>();
-
-    private Car[]? cars;
-
-    protected override async Task OnInitializedAsync()
-    {
-        Tests.Add(false);
-        cars = await Http.GetFromJsonAsync<Car[]>("API/Car");
-    }
+@if(fatalError == true)
+{
+<div class="error failed">
+    Tests stopped early due to a fatal error. Check above table for more info.
+</div>
 }

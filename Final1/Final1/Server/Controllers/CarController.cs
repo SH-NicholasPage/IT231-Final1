@@ -12,26 +12,26 @@ namespace Final1.Server.Controllers
         [HttpGet]
         public IEnumerable<Car> Get()
         {
-            return null;
+			throw new NotImplementedException();
         }
 
 		[HttpPost]
-		public void Post((String make, String model, int year, String? color, Int32? numOfWheels) carStuff)
+		public Car? Post((String make, String model, int year, String? color, Int32? numOfWheels) carStuff)
 		{
-			
-		}
+            throw new NotImplementedException();
+        }
 
 		[HttpPut]
-		public void Put((Guid id, String? make, String? model, Int32? year, String? color, Int32? numOfWheels) carStuff)
+		public Car? Put((Guid id, String? make, String? model, Int32? year, String? color, Int32? numOfWheels) carStuff)
 		{
-			
-		}
+            throw new NotImplementedException();
+        }
 
 		[HttpDelete]
 		public void Delete (Guid id)
 		{
-			
-		}
+            throw new NotImplementedException();
+        }
 
 		private Car? GetCarWithGUID(Guid guid) => Cars.Where(x => x.ID == guid).FirstOrDefault();
 	}
