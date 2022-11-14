@@ -1,5 +1,6 @@
 using Final1.Shared;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Final1.Server.Controllers
 {
@@ -7,23 +8,38 @@ namespace Final1.Server.Controllers
     [Route("API/[controller]")]
     public class CarController : ControllerBase
     {
-        List<Car> Cars { get; } //Lazy load this
+        private static List<Car> Cars { get; set; } //Lazy load this
 
         [HttpGet]
-        public IEnumerable<Car> Get()
+        public IEnumerable<Car>? Get(String? ids)
         {
-			throw new NotImplementedException();
-        }
+            List<Guid> IDs = null;
+            if (String.IsNullOrWhiteSpace(ids) == false)
+            {
+                try
+                {
+                    IDs = JsonSerializer.Deserialize<List<Guid>>(ids)!;
+                }
+                catch { }
+            }
 
-		[HttpPost]
-		public Car? Post((String make, String model, int year, String? color, Int32? numOfWheels) carStuff)
-		{
             throw new NotImplementedException();
         }
 
-		[HttpPut]
-		public Car? Put((Guid id, String? make, String? model, Int32? year, String? color, Int32? numOfWheels) carStuff)
+		[HttpPost]
+		public Car? Post([FromBody] Tuple<String, String, int, String?, Int32?> carStuff)
 		{
+            (String? make, String? model, Int32? year, String? color, Int32? numOfWheels) carStuffTupleType = (carStuff.Item1, carStuff.Item2, carStuff.Item3, carStuff.Item4, carStuff.Item5);
+
+            throw new NotImplementedException();
+        }
+
+        //Only modify properties for not null items
+		[HttpPut]
+		public Car? Put([FromBody] Tuple<Guid, String?, String?, Int32?, String?, Int32?> carStuff)
+		{
+            (Guid id, String? make, String? model, Int32? year, String? color, Int32? numOfWheels) carStuffTupleType = (carStuff.Item1, carStuff.Item2, carStuff.Item3, carStuff.Item4, carStuff.Item5, carStuff.Item6);
+
             throw new NotImplementedException();
         }
 
@@ -34,5 +50,14 @@ namespace Final1.Server.Controllers
         }
 
 		private Car? GetCarWithGUID(Guid guid) => Cars.Where(x => x.ID == guid).FirstOrDefault();
+
+
+        //YOU SHOULD NOT USE PATCH THIS WAY IN A REAL ENVIRONMENT
+        //Do not touch this method!
+        [HttpPatch]
+        public void Clear(String? _)
+        {
+            Cars = null!;
+        }
 	}
 }

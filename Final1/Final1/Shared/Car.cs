@@ -1,17 +1,33 @@
+using System.Xml.Linq;
+
 namespace Final1.Shared
 {
     public struct Car : IEquatable<Car>
     {
-        public Guid ID { get; set; }
-        public String Make { get; set; } = String.Empty;
-        public String Model { get; set; } = String.Empty;
-        public int Year { get; set; } = default(Int32);
-        public String? Color { get; set; } = null;
-        public Int32? NumberOfWheels { get; set; } = null;
+        public Guid ID { get; init; }
+        public String Make { get; init; } = String.Empty;
+        public String Model { get; init; } = String.Empty;
+        public int Year { get; init; } = default(Int32);
+        public String? Color { get; init; } = null;
+        public Int32? NumberOfWheels { get; init; } = null;
 
         public Car()
         {
             ID = Guid.NewGuid();
+        }
+
+        public Car(String make, String model, int year) : this(make, model, year, null, null) { }
+
+        public Car((String make, String model, int year, String? color, Int32? numberOfWheels) cs) : this(cs.make, cs.model, cs.year, cs.color, cs.numberOfWheels) { }
+
+        public Car(String make, String model, int year, String? color, Int32? numberOfWheels)
+        {
+            ID = Guid.NewGuid();
+            this.Make = make;
+            this.Model = model;
+            this.Year = year;
+            this.Color = color;
+            this.NumberOfWheels = numberOfWheels;
         }
 
         public bool EqualsWithoutGuid(Car? other)
@@ -72,6 +88,16 @@ namespace Final1.Shared
         public static bool operator !=(Car left, Car right)
         {
             return !(left.Equals(right));
+        }
+
+        public override int GetHashCode()
+        {
+            return (ID, Make, Model, Year, Color, NumberOfWheels).GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return "Car GUID: " + ID + "\t Make: " + Make + "\t Model: " + Model + "\t Year: " + Year + "\t Color: " + Color + "\t Number of Wheels: " + NumberOfWheels;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using System.Text.RegularExpressions;
+@using System.Web;
 <PageTitle>Index</PageTitle>
 
 <table style="border: 2px solid black; border-collapse: collapse;">
@@ -15,7 +17,6 @@
             </th>
         </tr>
     </thead>
-    <!--I'm lazy so I'm doing stupid HTML garbage OMEGALUL-->
     <tbody>
         @for(int i = 0; i < Math.Min(TestNames.Length, TestStatuses.Count); i++)
         {
@@ -24,10 +25,24 @@
                     @TestNames[i]
                 </td>
                 <td>
-                    <div class="@((TestStatuses[i] == false) ? "failed" : "passed")">@((TestStatuses[i] == false) ? "Failed" : "Passed")</div>
+                    @if (fatalError == true && TestStatuses[i] == null)
+                    {
+                        <div class="failed">Halted</div>
+                    }
+                    else if(TestStatuses[i] == null)
+                    {
+                        <div>Pending...</div>
+                    }
+                    else
+                    {
+                        <div class="@((TestStatuses[i] == false) ? "failed" : "passed")">@((TestStatuses[i] == false) ? "Failed" : "Passed")</div>
+                    }
                 </td>
                 <td>
-                    @TestMessages[i]
+                    @if (String.IsNullOrWhiteSpace(@TestMessages[i]) == false)
+                    {
+                    @((MarkupString)Regex.Replace(HttpUtility.HtmlEncode(@TestMessages[i]), "\r?\n|\r", "<br />"))
+                    }
                 </td>
             </tr>
         }
@@ -40,3 +55,7 @@
     Tests stopped early due to a fatal error. Check above table for more info.
 </div>
 }
+
+<div class="score">
+    Score: @Math.Round(((float)TestStatuses.Where(x => x != null && x.Value == true).Count() / TestStatuses.Count) * MAX_POINTS, 2) / @MAX_POINTS
+</div>

@@ -21,7 +21,7 @@ table, td, th
     color: green;
 }
 
-.error
+.error, .score
 {
     font-size: 2vw;
     margin-top: 1em;
