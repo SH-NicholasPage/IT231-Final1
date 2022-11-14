@@ -26,7 +26,7 @@ namespace Final1.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await Http.PatchAsync("API/Car", null);//Clear server list
+            await Http!.PatchAsync("API/Car", null);//Clear server list
 
             (bool passed, String msg) r = await PerformFunctionalityTests();
             TestStatuses[0] = r.passed;
@@ -78,7 +78,7 @@ namespace Final1.Client.Pages
 
             r2 = await PerformPostRequest(GenerateCarStuff());
             if (r2.exceptionOccurred == true) return (false, "POST API threw exception. Check console for more details.");
-            cCars.Add(r2.car.Value);
+            cCars.Add(r2.car!.Value);
 
             return (true, String.Empty);
         }
@@ -321,7 +321,7 @@ namespace Final1.Client.Pages
             return (true, "");
         }
 
-        private async Task<(Car[]? cars, bool exceptionOccurred)> PerformGetRequest(List<Guid> id = null, bool junk = false)
+        private async Task<(Car[]? cars, bool exceptionOccurred)> PerformGetRequest(List<Guid>? id = null, bool junk = false)
         {
             (Car[]? cars, bool exceptionOccurred) r;
             r.exceptionOccurred = false;
@@ -330,13 +330,13 @@ namespace Final1.Client.Pages
                 r.cars = await Http!.GetFromJsonAsync<Car[]?>("API/Car?ids=" + ((id != null) ? JsonSerializer.Serialize(id) : ""));
                 return r;
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 r.cars = null;
                 r.exceptionOccurred = true;
                 return r;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if(cCars.Count > 0 && junk == false)
                 {
