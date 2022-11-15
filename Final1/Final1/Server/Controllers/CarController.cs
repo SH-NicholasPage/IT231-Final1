@@ -45,7 +45,7 @@ namespace Final1.Server.Controllers
 		[HttpPost]
 		public Car? Post([FromBody] Tuple<String, String, int, String?, Int32?> carStuff)
 		{
-            (String? make, String? model, Int32? year, String? color, Int32? numOfWheels) carStuffTupleType = (carStuff.Item1, carStuff.Item2, carStuff.Item3, carStuff.Item4, carStuff.Item5);
+            (String make, String model, Int32 year, String? color, Int32? numOfWheels) carStuffTupleType = (carStuff.Item1, carStuff.Item2, carStuff.Item3, carStuff.Item4, carStuff.Item5);
 
             //TODO: Your code here
 
