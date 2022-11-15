@@ -16,7 +16,7 @@ namespace Final1.Client.Pages
         private const byte NUM_OF_TESTS = 6;
         private List<Boolean?> TestStatuses = Enumerable.Repeat<Boolean?>(null, NUM_OF_TESTS).ToList();
         private String[] TestMessages = new String[NUM_OF_TESTS];
-        private readonly String[] TestNames = { 
+        private readonly String[] TestNames = new String[NUM_OF_TESTS]{ 
             "Checking API calls before data is inserted", "POST test", "GET test", "PUT test", "DELETE test", "Final integrity check"
         };
         private bool fatalError = false;
