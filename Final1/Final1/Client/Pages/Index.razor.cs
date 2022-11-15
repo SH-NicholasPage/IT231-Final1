@@ -69,15 +69,15 @@ namespace Final1.Client.Pages
         private async Task<(bool passed, String msg)> PerformFunctionalityTests()
         {
             (Car[]? car, bool exceptionOccurred) r = await PerformGetRequest();
-            if (r.exceptionOccurred == true) return (false, "GET API threw exception. Check console for more details.");
+            if (r.exceptionOccurred == true) return (false, "GET API threw exception. Check console/terminal for more details.");
 
-            if (await PerformDeleteRequest(Guid.Empty) == true) return (false, "DELETE API threw exception. Check console for more details.");
+            if (await PerformDeleteRequest(Guid.Empty) == true) return (false, "DELETE API threw exception. Check console/terminal for more details.");
 
             (Car? car, bool exceptionOccurred)  r2 = await PerformPutRequest(GenerateCarStuffForPut());
-            if (r2.exceptionOccurred == true) return (false, "PUT API threw exception. Check console for more details.");
+            if (r2.exceptionOccurred == true) return (false, "PUT API threw exception. Check console/terminal for more details.");
 
             r2 = await PerformPostRequest(GenerateCarStuff());
-            if (r2.exceptionOccurred == true) return (false, "POST API threw exception. Check console for more details.");
+            if (r2.exceptionOccurred == true) return (false, "POST API threw exception. Check console/terminal for more details.");
             cCars.Add(r2.car!.Value);
 
             return (true, String.Empty);
@@ -100,7 +100,7 @@ namespace Final1.Client.Pages
 
                 if (cCars.Last().EqualsWithoutGuid(r.car) == false)
                 {
-                    return (false, r.exceptionOccurred ? "POST API threw exception. Check console for more details." : "Car added in POST was not correct.");
+                    return (false, r.exceptionOccurred ? "POST API threw exception. Check console/terminal for more details." : "Car added in POST was not correct.");
                 }
 
                 cCars[cCars.Count - 1] = r.car!.Value;
@@ -122,7 +122,7 @@ namespace Final1.Client.Pages
 
             if(r.exceptionOccurred == true)
             {
-                return (false, "GET with parameters threw an exception.");
+                return (false, "GET with parameters threw an exception. Check console/terminal for more details.");
             }
             else if(r.cars == null)
             {
@@ -137,7 +137,7 @@ namespace Final1.Client.Pages
 
             if (r.exceptionOccurred == true)
             {
-                return (false, "GET with junk value threw an exception.");
+                return (false, "GET with junk value threw an exception. Check console/terminal for more details.");
             }
             else if (r.cars != null)
             {
@@ -148,7 +148,7 @@ namespace Final1.Client.Pages
 
             if (r.exceptionOccurred == true)
             {
-                return (false, "GET with no parameters threw an exception.");
+                return (false, "GET with no parameters threw an exception. Check console/terminal for more details.");
             }
             else if (r.cars == null)
             {
@@ -164,7 +164,7 @@ namespace Final1.Client.Pages
 
             if (r.exceptionOccurred == true)
             {
-                return (false, "GET with one parameters threw exception.");
+                return (false, "GET with one parameters threw exception. Check console/terminal for more details.");
             }
             else if (r.cars == null)
             {
@@ -188,7 +188,7 @@ namespace Final1.Client.Pages
 
             if (r.exceptionOccurred == true)
             {
-                return (false, "PUT with empty GUID threw exception.");
+                return (false, "PUT with empty GUID threw exception. Check console/terminal for more details.");
             }
             else if (r.car != null)
             {
@@ -232,7 +232,7 @@ namespace Final1.Client.Pages
 
             if (r.exceptionOccurred == true)
             {
-                return (false, "PUT threw an exception.");
+                return (false, "PUT threw an exception. Check console/terminal for more details.");
             }
             else if (r.car == null)
             {
@@ -252,7 +252,7 @@ namespace Final1.Client.Pages
 
             if (erroredOut == true)
             {
-                return (false, "DELETE with empty GUID threw an exception.");
+                return (false, "DELETE with empty GUID threw an exception. Check console/terminal for more details.");
             }
 
             Car carToDelete = cCars[Random.Shared.Next(0, cCars.Count)];
@@ -262,7 +262,7 @@ namespace Final1.Client.Pages
 
             if (erroredOut == true)
             {
-                return (false, "DELETE threw an exception.");
+                return (false, "DELETE threw an exception. Check console/terminal for more details.");
             }
 
             carToDelete = cCars[Random.Shared.Next(0, cCars.Count)];
@@ -272,14 +272,14 @@ namespace Final1.Client.Pages
 
             if (erroredOut == true)
             {
-                return (false, "DELETE threw an exception.");
+                return (false, "DELETE threw an exception. Check console/terminal for more details.");
             }
 
             erroredOut = await PerformDeleteRequest(carToDelete.ID);
 
             if (erroredOut == true)
             {
-                return (false, "DELETE with deleted GUID threw an exception.");
+                return (false, "DELETE with deleted GUID threw an exception. Check console/terminal for more details.");
             }
 
             return (true, "");
@@ -291,7 +291,7 @@ namespace Final1.Client.Pages
 
             if (r.exceptionOccurred == true)
             {
-                return (false, "GET with no parameters threw an exception.");
+                return (false, "GET with no parameters threw an exception. Check console/terminal for more details.");
             }
             else if (r.cars == null)
             {
