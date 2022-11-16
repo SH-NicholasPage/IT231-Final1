@@ -447,7 +447,7 @@ namespace Final1.Client.Pages
             {
                 if (cCars.Count > 0 && junk == false)
                 {
-                    return String.Empty;
+                    return ex.Message;
                 }
 
                 return String.Empty;
