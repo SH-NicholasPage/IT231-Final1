@@ -342,6 +342,11 @@ namespace Final1.Client.Pages
                 if(cCars.Count > 0 && junk == false)
                 {
                     r.exMsg = ex.Message;
+
+                    if (id == null)
+                    {
+                        r.exMsg += "\n(Null returned from server. Expected full list.)";
+                    }
                 }
 
                 r.cars = null;
