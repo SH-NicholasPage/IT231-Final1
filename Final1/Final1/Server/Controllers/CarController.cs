@@ -23,14 +23,11 @@ namespace Final1.Server.Controllers
         [HttpGet]
         public IEnumerable<Car>? Get(String? ids)
         {
-            List<Guid> IDs = null;
-            if (String.IsNullOrWhiteSpace(ids) == false)
+            List<Guid>? IDs = null;
+            //If possible, will parse parameter to list of Guids
+            if(TryParseStringToGuidList(ids, out IDs) == true)
             {
-                try
-                {
-                    IDs = JsonSerializer.Deserialize<List<Guid>>(ids)!;
-                }
-                catch { }
+                //If the parameter was parsed to a list of Guids...
             }
 
             //TODO: Your code here
@@ -77,6 +74,27 @@ namespace Final1.Server.Controllers
             //TODO: Your code here
 
             throw new NotImplementedException();
+        }
+
+        public bool TryParseStringToGuidList(String? ids, out List<Guid>? guids)
+        {
+            guids = null;
+            if (String.IsNullOrWhiteSpace(ids) == false)
+            {
+                try
+                {
+                    guids = JsonSerializer.Deserialize<List<Guid>>(ids)!;
+                    return true;
+                }
+                catch 
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         //YOU SHOULD NOT USE PATCH THIS WAY IN A REAL ENVIRONMENT
