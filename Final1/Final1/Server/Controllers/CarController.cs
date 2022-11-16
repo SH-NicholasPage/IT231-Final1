@@ -15,6 +15,11 @@ namespace Final1.Server.Controllers
     {
         private static List<Car> Cars { get; set; } //Lazy load this
 
+        /// <summary>
+        /// Returns the car(s) requested by the user.
+        /// If the user does not pass in a parameter, returns all cars.
+        /// </summary>
+        /// <param name="ids"></param>
         [HttpGet]
         public IEnumerable<Car>? Get(String? ids)
         {
@@ -33,17 +38,25 @@ namespace Final1.Server.Controllers
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs expected REST POST and returns car created.
+        /// </summary>
+        /// <param name="carStuff"></param>
 		[HttpPost]
 		public Car? Post([FromBody] Tuple<String, String, int, String?, Int32?> carStuff)
 		{
-            (String? make, String? model, Int32? year, String? color, Int32? numOfWheels) carStuffTupleType = (carStuff.Item1, carStuff.Item2, carStuff.Item3, carStuff.Item4, carStuff.Item5);
+            (String make, String model, Int32 year, String? color, Int32? numOfWheels) carStuffTupleType = (carStuff.Item1, carStuff.Item2, carStuff.Item3, carStuff.Item4, carStuff.Item5);
 
             //TODO: Your code here
 
             throw new NotImplementedException();
         }
 
-        //Only modify properties for not null items
+        /// <summary>
+        /// Modifies a car matching a GUID.
+        /// Does not modify properties that are null.
+        /// </summary>
+        /// <param name="carStuff"></param>
 		[HttpPut]
 		public Car? Put([FromBody] Tuple<Guid, String?, String?, Int32?, String?, Int32?> carStuff)
 		{
@@ -54,6 +67,10 @@ namespace Final1.Server.Controllers
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Performs expected REST DELETE.
+        /// </summary>
+        /// <param name="id"></param>
 		[HttpDelete]
 		public void Delete (Guid id)
 		{
@@ -62,11 +79,8 @@ namespace Final1.Server.Controllers
             throw new NotImplementedException();
         }
 
-		private Car? GetCarWithGUID(Guid guid) => Cars.Where(x => x.ID == guid).FirstOrDefault();
-
-
         //YOU SHOULD NOT USE PATCH THIS WAY IN A REAL ENVIRONMENT
-        //Do not touch this method!
+        //Do not modify this method!!
         [HttpPatch]
         public void Clear(String? _)
         {
