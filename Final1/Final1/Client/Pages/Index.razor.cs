@@ -1,6 +1,7 @@
 ﻿using Final1.Shared;
 using Microsoft.AspNetCore.Components;
 using System.Drawing;
+using System.Linq.Expressions;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -68,16 +69,16 @@ namespace Final1.Client.Pages
 
         private async Task<(bool passed, String msg)> PerformFunctionalityTests()
         {
-            (Car[]? car, bool exceptionOccurred) r = await PerformGetRequest();
-            if (r.exceptionOccurred == true) return (false, "GET API threw exception. Check console for more details.");
+            (Car[]? car, String exMsg) r = await PerformGetRequest();
+            if (String.IsNullOrWhiteSpace(r.exMsg) == false) return (false, "GET API threw exception. Check console/terminal for more details.\n" + r.exMsg);
 
-            if (await PerformDeleteRequest(Guid.Empty) == true) return (false, "DELETE API threw exception. Check console for more details.");
+            if (String.IsNullOrWhiteSpace(await PerformDeleteRequest(Guid.Empty)) == false) return (false, "DELETE API threw exception. Check console/terminal for more details.\n" + r.exMsg);
 
-            (Car? car, bool exceptionOccurred)  r2 = await PerformPutRequest(GenerateCarStuffForPut());
-            if (r2.exceptionOccurred == true) return (false, "PUT API threw exception. Check console for more details.");
+            (Car? car, String exMsg)  r2 = await PerformPutRequest(GenerateCarStuffForPut());
+            if (String.IsNullOrWhiteSpace(r2.exMsg) == false) return (false, "PUT API threw exception. Check console/terminal for more details.\n" + r.exMsg);
 
             r2 = await PerformPostRequest(GenerateCarStuff());
-            if (r2.exceptionOccurred == true) return (false, "POST API threw exception. Check console for more details.");
+            if (String.IsNullOrWhiteSpace(r2.exMsg) == false) return (false, "POST API threw exception. Check console/terminal for more details.\n" + r.exMsg);
             cCars.Add(r2.car!.Value);
 
             return (true, String.Empty);
@@ -96,11 +97,11 @@ namespace Final1.Client.Pages
                     NumberOfWheels = c.numOfWheels
                 });
 
-                (Car? car, bool exceptionOccurred) r = await PerformPostRequest(c);
+                (Car? car, String exMsg) r = await PerformPostRequest(c);
 
                 if (cCars.Last().EqualsWithoutGuid(r.car) == false)
                 {
-                    return (false, r.exceptionOccurred ? "POST API threw exception. Check console for more details." : "Car added in POST was not correct.");
+                    return (false, String.IsNullOrWhiteSpace(r.exMsg) == false ? "POST API threw exception. Check console/terminal for more details.\n" + r.exMsg : "Car added in POST was not correct.");
                 }
 
                 cCars[cCars.Count - 1] = r.car!.Value;
@@ -118,11 +119,11 @@ namespace Final1.Client.Pages
                 carsToTest = cCars.Where(x => Random.Shared.Next(0, 10) == 0).ToList();
             }
 
-            (Car[]? cars, bool exceptionOccurred) r = await PerformGetRequest(carsToTest.Select(x => x.ID).ToList());
+            (Car[]? cars, String exMsg) r = await PerformGetRequest(carsToTest.Select(x => x.ID).ToList());
 
-            if(r.exceptionOccurred == true)
+            if(String.IsNullOrWhiteSpace(r.exMsg) == false)
             {
-                return (false, "GET with parameters threw an exception.");
+                return (false, "GET with parameters threw an exception. Check console/terminal for more details.\n" + r.exMsg);
             }
             else if(r.cars == null)
             {
@@ -135,9 +136,9 @@ namespace Final1.Client.Pages
 
             r = await PerformGetRequest("goijusngonsn vbiuo4t4 gs \\getg ", true);
 
-            if (r.exceptionOccurred == true)
+            if (String.IsNullOrWhiteSpace(r.exMsg) == false)
             {
-                return (false, "GET with junk value threw an exception.");
+                return (false, "GET with junk value threw an exception. Check console/terminal for more details.\n" + r.exMsg);
             }
             else if (r.cars != null)
             {
@@ -146,9 +147,9 @@ namespace Final1.Client.Pages
 
             r = await PerformGetRequest();
 
-            if (r.exceptionOccurred == true)
+            if (String.IsNullOrWhiteSpace(r.exMsg) == false)
             {
-                return (false, "GET with no parameters threw an exception.");
+                return (false, "GET with no parameters threw an exception. Check console/terminal for more details.\n" + r.exMsg);
             }
             else if (r.cars == null)
             {
@@ -162,9 +163,9 @@ namespace Final1.Client.Pages
             carsToTest = new List<Car> { cCars[Random.Shared.Next(0, cCars.Count)] };
             r = await PerformGetRequest(carsToTest.Select(x => x.ID).ToList());
 
-            if (r.exceptionOccurred == true)
+            if (String.IsNullOrWhiteSpace(r.exMsg) == false)
             {
-                return (false, "GET with one parameters threw exception.");
+                return (false, "GET with one parameters threw exception. Check console/terminal for more details.\n" + r.exMsg);
             }
             else if (r.cars == null)
             {
@@ -184,11 +185,11 @@ namespace Final1.Client.Pages
 
         private async Task<(bool passed, String msg)> PerformSeveralPuts()
         {
-            (Car? car, bool exceptionOccurred) r = await PerformPutRequest(GenerateCarStuffForPut(), true);
+            (Car? car, String exMsg) r = await PerformPutRequest(GenerateCarStuffForPut(), true);
 
-            if (r.exceptionOccurred == true)
+            if (String.IsNullOrWhiteSpace(r.exMsg) == false)
             {
-                return (false, "PUT with empty GUID threw exception.");
+                return (false, "PUT with empty GUID threw exception. Check console/terminal for more details.\n" + r.exMsg);
             }
             else if (r.car != null)
             {
@@ -230,9 +231,9 @@ namespace Final1.Client.Pages
 
             cCars.Insert(index, car);
 
-            if (r.exceptionOccurred == true)
+            if (String.IsNullOrWhiteSpace(r.exMsg) == false)
             {
-                return (false, "PUT threw an exception.");
+                return (false, "PUT threw an exception. Check console/terminal for more details.\n" + r.exMsg);
             }
             else if (r.car == null)
             {
@@ -248,38 +249,38 @@ namespace Final1.Client.Pages
 
         private async Task<(bool passed, String msg)> PerformSeveralDeletes()
         {
-            bool erroredOut = await PerformDeleteRequest(Guid.Empty, true);
+            String errMsg = await PerformDeleteRequest(Guid.Empty, true);
 
-            if (erroredOut == true)
+            if (String.IsNullOrWhiteSpace(errMsg) == false)
             {
-                return (false, "DELETE with empty GUID threw an exception.");
+                return (false, "DELETE with empty GUID threw an exception. Check console/terminal for more information.\n" + errMsg);
             }
 
             Car carToDelete = cCars[Random.Shared.Next(0, cCars.Count)];
             cCars.Remove(carToDelete);
 
-            erroredOut = await PerformDeleteRequest(carToDelete.ID);
+            errMsg = await PerformDeleteRequest(carToDelete.ID);
 
-            if (erroredOut == true)
+            if (String.IsNullOrWhiteSpace(errMsg) == false)
             {
-                return (false, "DELETE threw an exception.");
+                return (false, "DELETE threw an exception. Check console/terminal for more information.\n" + errMsg); ;
             }
 
             carToDelete = cCars[Random.Shared.Next(0, cCars.Count)];
             cCars.Remove(carToDelete);
 
-            erroredOut = await PerformDeleteRequest(carToDelete.ID);
+            errMsg = await PerformDeleteRequest(carToDelete.ID);
 
-            if (erroredOut == true)
+            if (String.IsNullOrWhiteSpace(errMsg) == false)
             {
-                return (false, "DELETE threw an exception.");
+                return (false, "DELETE threw an exception. Check console/terminal for more information.\n" + errMsg);
             }
 
-            erroredOut = await PerformDeleteRequest(carToDelete.ID);
+            errMsg = await PerformDeleteRequest(carToDelete.ID);
 
-            if (erroredOut == true)
+            if (String.IsNullOrWhiteSpace(errMsg) == false)
             {
-                return (false, "DELETE with deleted GUID threw an exception.");
+                return (false, "DELETE with deleted GUID threw an exception. Check console/terminal for more information.\n" + errMsg);
             }
 
             return (true, "");
@@ -287,11 +288,11 @@ namespace Final1.Client.Pages
 
         private async Task<(bool passed, String msg)> PerformValidation()
         {
-            (Car[]? cars, bool exceptionOccurred) r = await PerformGetRequest();
+            (Car[]? cars, String exMsg) r = await PerformGetRequest();
 
-            if (r.exceptionOccurred == true)
+            if (String.IsNullOrWhiteSpace(r.exMsg) == false)
             {
-                return (false, "GET with no parameters threw an exception.");
+                return (false, "GET with no parameters threw an exception. Check console/terminal for more details.\n" + r.exMsg);
             }
             else if (r.cars == null)
             {
@@ -321,26 +322,26 @@ namespace Final1.Client.Pages
             return (true, "");
         }
 
-        private async Task<(Car[]? cars, bool exceptionOccurred)> PerformGetRequest(List<Guid>? id = null, bool junk = false)
+        private async Task<(Car[]? cars, String exMsg)> PerformGetRequest(List<Guid>? id = null, bool junk = false)
         {
-            (Car[]? cars, bool exceptionOccurred) r;
-            r.exceptionOccurred = false;
+            (Car[]? cars, String exMsg) r;
+            r.exMsg = String.Empty;
             try
             {
                 r.cars = await Http!.GetFromJsonAsync<Car[]?>("API/Car?ids=" + ((id != null) ? JsonSerializer.Serialize(id) : ""));
                 return r;
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
                 r.cars = null;
-                r.exceptionOccurred = true;
+                r.exMsg = ex.Message;
                 return r;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 if(cCars.Count > 0 && junk == false)
                 {
-                    r.exceptionOccurred = true;
+                    r.exMsg = ex.Message;
                 }
 
                 r.cars = null;
@@ -348,26 +349,26 @@ namespace Final1.Client.Pages
             }
         }
 
-        private async Task<(Car[]? cars, bool exceptionOccurred)> PerformGetRequest(String id, bool junk = false)
+        private async Task<(Car[]? cars, String exMsg)> PerformGetRequest(String id, bool junk = false)
         {
-            (Car[]? cars, bool exceptionOccurred) r;
-            r.exceptionOccurred = false;
+            (Car[]? cars, String exMsg) r;
+            r.exMsg = String.Empty;
             try
             {
                 r.cars = await Http!.GetFromJsonAsync<Car[]?>("API/Car?ids=" + id);
                 return r;
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
                 r.cars = null;
-                r.exceptionOccurred = true;
+                r.exMsg = ex.Message;
                 return r;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 if (cCars.Count > 0 && junk == false)
                 {
-                    r.exceptionOccurred = true;
+                    r.exMsg = ex.Message;
                 }
 
                 r.cars = null;
@@ -375,45 +376,55 @@ namespace Final1.Client.Pages
             }
         }
 
-        private async Task<(Car? car, bool exceptionOccurred)> PerformPostRequest((String make, String model, int year, String? color, Int32? numOfWheels) carStuff)
+        private async Task<(Car? car, String exMsg)> PerformPostRequest((String make, String model, int year, String? color, Int32? numOfWheels) carStuff)
         {
-            (Car? car, bool exceptionOccurred) r;
-            r.exceptionOccurred = false;
+            (Car? car, String exMsg) r;
+            r.exMsg = String.Empty;
             try
             {
                 HttpResponseMessage msg = await Http!.PostAsJsonAsync("API/Car", new Tuple<String, String, int, String?, Int32?>(carStuff.make, carStuff.model, carStuff.year, carStuff.color, carStuff.numOfWheels));
                 r.car = await msg.Content.ReadFromJsonAsync<Car?>();
                 return r;
             }
-            catch
+            catch (HttpRequestException ex)
             {
                 r.car = null;
-                r.exceptionOccurred = true;
+                r.exMsg = ex.Message;
+                return r;
+            }
+            catch (Exception ex)
+            {
+                if (cCars.Count > 0)
+                {
+                    r.exMsg = ex.Message;
+                }
+
+                r.car = null;
                 return r;
             }
         }
 
-        private async Task<(Car? car, bool exceptionOccurred)> PerformPutRequest((Guid id, String? make, String? model, int? year, String? color, Int32? numOfWheels) carStuff, bool junk = false)
+        private async Task<(Car? car, String exMsg)> PerformPutRequest((Guid id, String? make, String? model, int? year, String? color, Int32? numOfWheels) carStuff, bool junk = false)
         {
-            (Car? car, bool exceptionOccurred) r;
-            r.exceptionOccurred = false;
+            (Car? car, String exMsg) r;
+            r.exMsg = String.Empty;
             try
             {
                 HttpResponseMessage msg = await Http!.PutAsJsonAsync("API/Car", new Tuple<Guid, String?, String?, Int32?, String?, Int32?>(carStuff.id, carStuff.make, carStuff.model, carStuff.year, carStuff.color, carStuff.numOfWheels));
                 r.car = await msg.Content.ReadFromJsonAsync<Car?>();
                 return r;
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
                 r.car = null;
-                r.exceptionOccurred = true;
+                r.exMsg = ex.Message;
                 return r;
             }
-            catch
+            catch (Exception ex)
             {
                 if (cCars.Count > 0 && junk == false)
                 {
-                    r.exceptionOccurred = true;
+                    r.exMsg = ex.Message;
                 }
 
                 r.car = null;
@@ -421,25 +432,25 @@ namespace Final1.Client.Pages
             }
         }
 
-        private async Task<bool> PerformDeleteRequest(Guid id, bool junk = false)
+        private async Task<String> PerformDeleteRequest(Guid id, bool junk = false)
         {
             try
             {
                 await Http!.DeleteAsync("API/Car?id=" + id);
-                return false;
+                return String.Empty;
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
-                return true;
+                return ex.Message;
             }
-            catch
+            catch (Exception ex)
             {
                 if (cCars.Count > 0 && junk == false)
                 {
-                    return false;
+                    return String.Empty;
                 }
 
-                return true;
+                return String.Empty;
             }
         }
 
