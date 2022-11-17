@@ -347,6 +347,10 @@ namespace Final1.Client.Pages
                     {
                         r.exMsg += "\n(Null returned from server. Expected full list.)";
                     }
+                    else if (id.Count > 0)
+                    {
+                        r.exMsg += "\n(Null returned from server. Expected the " + id.Count + " items " + String.Join(", ", id) + ")";
+                    }
                 }
 
                 r.cars = null;
@@ -402,6 +406,11 @@ namespace Final1.Client.Pages
                 if (cCars.Count > 0)
                 {
                     r.exMsg = ex.Message;
+
+                    if(ex.Message.StartsWith("'S' is an invalid start of a value", StringComparison.OrdinalIgnoreCase))
+                    {
+                        r.exMsg += "\n(An exception was likely thrown in the POST method on the server.)";
+                    }
                 }
 
                 r.car = null;
@@ -430,6 +439,11 @@ namespace Final1.Client.Pages
                 if (cCars.Count > 0 && junk == false)
                 {
                     r.exMsg = ex.Message;
+
+                    if (ex.Message.StartsWith("The input does not contain any JSON tokens.", StringComparison.OrdinalIgnoreCase))
+                    {
+                        r.exMsg += "\n(Null returned from server. Expected car with ID " + carStuff.id + ".)";
+                    }
                 }
 
                 r.car = null;

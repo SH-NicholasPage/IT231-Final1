@@ -11,10 +11,8 @@ namespace Final1.Shared
         public String? Color { get; init; } = null;
         public Int32? NumberOfWheels { get; init; } = null;
 
-        public Car()
-        {
-            ID = Guid.NewGuid();
-        }
+        public Car() => ID = Guid.NewGuid();
+       
 
         public Car(String make, String model, int year) : this(make, model, year, null, null) { }
 
